@@ -3,6 +3,9 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import pandas as pd
 from sklearn import preprocessing 
 from sklearn.preprocessing import OneHotEncoder
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 # Load your dataset
 X_full = pd.read_csv("data/cleandata2.csv")
@@ -35,3 +38,13 @@ X_full = pd.concat([X_full, home_team_df, away_team_df], axis=1)
 # Final check
 print(X_full.head())
 print(X_full.describe())
+
+plt.figure(figsize=(16, 12))
+sns.heatmap(X_full.corr(),
+            cmap="Blues",annot=True, fmt='.2f', vmin=0)
+
+ohe_home_df = pd.DataFrame(ohe_home)
+ohe_away_df = pd.DataFrame(ohe_away, columns=list("abcdefghijklmnopqrstuvwxyzABCD"))
+X_full = pd.concat([X_full,ohe_home_df], axis=1)
+X_full = pd.concat([X_full,ohe_away_df], axis=1)
+print(X_full.describe)
