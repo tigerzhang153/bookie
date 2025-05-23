@@ -48,3 +48,4 @@ ohe_away_df = pd.DataFrame(ohe_away, columns=list("abcdefghijklmnopqrstuvwxyzABC
 X_full = pd.concat([X_full,ohe_home_df], axis=1)
 X_full = pd.concat([X_full,ohe_away_df], axis=1)
 print(X_full.describe)
+plt.show()
