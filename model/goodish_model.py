@@ -3,9 +3,12 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.metrics import mean_absolute_error
+from xgboost import XGBRegressor
+from sklearn.linear_model import Ridge
 import joblib
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.ensemble import RandomForestRegressor
+from scipy.stats import randint, uniform
+from sklearn.ensemble import RandomForestRegressor, StackingRegressor
+
 
 # Load datasets
 gamesdata = pd.read_csv("data/cleandata2.csv")
@@ -76,13 +79,37 @@ rf = RandomForestRegressor(random_state=42)
 random_search = RandomizedSearchCV(
     estimator=rf,
     param_distributions=param_distributions,
-    n_iter= 200,  # Number of random combinations to try
+    n_iter=50,  # Number of random combinations to try
     cv=5,       # 5-fold cross-validation
     verbose=2,
     n_jobs=-1,
     scoring='neg_mean_absolute_error',
     random_state=42
 )
+
+xgb = XGBRegressor(
+    n_estimators=300,
+    learning_rate=0.1,
+    max_depth=5,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    random_state=42
+)
+
+meta_model = Ridge()
+
+stack = StackingRegressor(
+    estimators=[('rf', rf), ('xgb', xgb)],
+    final_estimator=meta_model,
+    passthrough=True,  # optional: passes original features to final estimator
+    n_jobs=-1
+)
+
+stack.fit(X_train, y_train)
+preds = stack.predict(X_test)
+mae = mean_absolute_error(y_test, preds)
+
+print(f"Stacked Model MAE: {mae:.2f}")
 
 # --- Fit the Search ---
 random_search.fit(X_train, y_train)
@@ -92,15 +119,6 @@ best_model = random_search.best_estimator_
 print("Best parameters:", random_search.best_params_)
 
 # --- Evaluate on Test Set ---
-y_pred = best_model.predict(X_test)
+y_pred = stack.predict(X_test)
 mae = mean_absolute_error(y_test, y_pred)
 print(f"Optimized MAE on test set: {mae:.2f}")
-
-# Example prediction for a new game
-example_game = pd.DataFrame([{
-    "avgpointtotal_home": 226.0,
-    "avgpointtotal_away": 221.0,
-    "meanpointtotal": (226.0 + 221.0) / 2
-}])
-prediction = best_model.predict(example_game)[0]
-print(f"Predicted total points for new game: {prediction:.2f}")
