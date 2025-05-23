@@ -1,6 +1,7 @@
 import pandas as pd
+from goodish_model import predicter
 
-def recommend_best_game_to_bet(games_df, betting_lines, model):
+def recommend_bet(games_df, betting_line):
     """
     Recommends the game with the highest edge vs sportsbook line.
     
@@ -15,23 +16,35 @@ def recommend_best_game_to_bet(games_df, betting_lines, model):
     """
     
     # Predict point totals
-    predictions = model.predict(games_df)
+    predicted_total = predicter(games_df)
     
-    # Create result dataframe
-    result = games_df.copy()
-    result["predicted_total"] = predictions
-    result["betting_line"] = betting_lines
-    result["edge"] = abs(result["predicted_total"] - result["betting_line"])
-    
-    # Sort by biggest edge
-    result = result.sort_values(by="edge", ascending=False).reset_index(drop=True)
-    
-    # Print recommendation
-    top_game = result.iloc[0]
-    print("Recommended bet: ")
-    print(f"Game {top_game['HOME_TEAM_ID']} vs {top_game['VISITOR_TEAM_ID']} on {top_game['GAME_DATE_EST']}")
-    print(f"Model prediction: {top_game['predicted_total']:.2f}")
-    print(f"Betting line: {top_game['betting_line']:.2f}")
-    print(f"Edge: {top_game['edge']:.2f} points")
-    
-    return result
+
+    # Calculate edge
+    edge = abs(predicted_total - betting_line)
+    recommendation = "bet the OVER" if predicted_total > betting_line else "bet the UNDER"
+
+    # Display results
+    print("Betting Recommendation:")
+    print(f"Model prediction: {predicted_total:.2f}")
+    print(f"Betting line: {betting_line:.2f}")
+    print(f"Edge: {edge:.2f} points")
+    print(f"Suggested bet: {recommendation}")
+
+    return {
+        "predicted_total": predicted_total,
+        "betting_line": betting_line,
+        "edge": edge,
+        "recommendation": recommendation
+    }
+
+
+
+if __name__ == "__main__":
+    test_games_df = pd.DataFrame([
+    {
+        "avgpointtotal_home": 220,
+        "avgpointtotal_away": 215,
+        "meanpointtotal": (220 + 215) / 2
+    }
+]  )
+    recommend_bet(test_games_df, 200)
