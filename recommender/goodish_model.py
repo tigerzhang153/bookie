@@ -133,5 +133,5 @@ def predicter(game_df):
     # Make prediction using the stacked model
     #prediction = stack.predict(example_game)[0]
     #print(f"Predicted total points for new game: {prediction:.2f}")
-    print(f"Optimized MAE on test set: {mae:.2f}")
+    #print(f"Optimized MAE on test set: {mae:.2f}")
     return stack.predict(game_df)[0]
