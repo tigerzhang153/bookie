@@ -1,5 +1,42 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.env
+.venv
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.next/
+out/
+build/
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project specific
+data/*.csv
+model/saved_models/
+.firebase/
+*.log
+
 # dependencies
 /node_modules
 /.pnp
@@ -17,7 +54,3 @@
 .env.development.local
 .env.test.local
 .env.production.local
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
