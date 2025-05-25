@@ -10,6 +10,8 @@ import { Alert, AlertDescription } from "./ui/alert"
 import { Badge } from "./ui/badge"
 import { db } from "../firebase"
 import { collection, addDoc } from "firebase/firestore"
+import { teamNameToId } from "../api/teamMapping"
+import config from '../config'
 
 export default function PredictionPage({ onNavigateBack, prediction, setPrediction }) {
   const [team1, setTeam1] = useState("")
@@ -25,44 +27,59 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
     setPrediction(null)
 
     try {
-      // Mock prediction - replace with your actual Firebase Cloud Function call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // Convert team names to IDs
+      const homeTeamId = teamNameToId[team1.trim()]
+      const awayTeamId = teamNameToId[team2.trim()]
 
-      const homeAvg = Math.random() * 20 + 100
-      const awayAvg = Math.random() * 20 + 100
-      const meanTotal = (homeAvg + awayAvg) / 2
-      const predictedTotal = meanTotal + (Math.random() - 0.5) * 10
-      const edge = Math.abs(predictedTotal - Number.parseFloat(bettingLine))
-      const recommendation = predictedTotal > Number.parseFloat(bettingLine) ? "bet the OVER" : "bet the UNDER"
-
-      const result = {
-        predicted_total: Math.round(predictedTotal * 100) / 100,
-        betting_line: Number.parseFloat(bettingLine),
-        edge: Math.round(edge * 100) / 100,
-        recommendation: recommendation,
-        confidence: Math.min(95, Math.max(55, 60 + edge * 2)),
-        model_features: {
-          avgpointtotal_home: Math.round(homeAvg * 100) / 100,
-          avgpointtotal_away: Math.round(awayAvg * 100) / 100,
-          meanpointtotal: Math.round(meanTotal * 100) / 100,
-        },
-        model_version: "Stacked Ensemble v1.0",
-        factors: ["Random Forest", "XGBoost", "Ridge Meta-Learner"],
+      if (!homeTeamId || !awayTeamId) {
+        throw new Error("Invalid team name(s). Please enter valid NBA team names.")
       }
 
+      const bettingLineNum = Number.parseFloat(bettingLine)
+      if (isNaN(bettingLineNum)) {
+        throw new Error("Please enter a valid betting line number.")
+      }
+
+      console.log("Sending prediction request:", {
+        home_team_id: homeTeamId,
+        away_team_id: awayTeamId,
+        betting_line: bettingLineNum
+      })
+
+      // Call prediction API
+      const response = await fetch(`${config.apiUrl}/predict`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          home_team_id: homeTeamId,
+          away_team_id: awayTeamId,
+          betting_line: bettingLineNum
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null)
+        throw new Error(errorData?.detail || 'Failed to get prediction from model')
+      }
+
+      const result = await response.json()
+      console.log("Received prediction:", result)
       setPrediction(result)
 
       // Save to Firestore
       await addDoc(collection(db, "predictions"), {
         team1: team1.trim(),
         team2: team2.trim(),
-        betting_line: Number.parseFloat(bettingLine),
+        betting_line: bettingLineNum,
         prediction: result,
         timestamp: new Date(),
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to get prediction. Please try again.")
       console.error("Prediction error:", err)
+      setError(err instanceof Error ? err.message : "Failed to get prediction. Please try again.")
     } finally {
       setIsLoading(false)
     }

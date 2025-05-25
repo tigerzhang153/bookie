@@ -13,7 +13,7 @@ export default function HomePage({ onNavigate }) {
           <div className="flex items-center justify-center mb-4">
             <Zap className="w-8 h-8 text-blue-600 mr-2" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Sports Prediction AI
+              Bookie AI
             </h1>
           </div>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">

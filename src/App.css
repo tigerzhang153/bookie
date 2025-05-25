@@ -1,172 +1,75 @@
 .App {
   text-align: center;
-  min-height: 100vh;
+}
+
+/* Custom styles for your sports betting app */
+.gradient-bg {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 20px;
 }
 
-.home-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
-
-.home-container h1 {
-  font-size: 3rem;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.options-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  margin-top: 50px;
-}
-
-.option-card {
+.glass-effect {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 30px;
-  cursor: pointer;
-  transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.option-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.option-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-}
-
-.prediction-container,
-.analytics-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.back-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 25px;
-  cursor: pointer;
-  margin-bottom: 30px;
+.prediction-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
   transition: all 0.3s ease;
 }
 
-.back-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+.prediction-card:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: translateY(-4px);
 }
 
-.prediction-form {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 30px;
-  margin: 20px 0;
+.betting-recommendation {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
-.form-group {
-  margin-bottom: 20px;
-  text-align: left;
+.betting-recommendation.over {
+  background-color: rgb(220 252 231);
+  color: rgb(22 101 52);
+  border: 1px solid rgb(187 247 208);
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
+.betting-recommendation.under {
+  background-color: rgb(254 226 226);
+  color: rgb(153 27 27);
+  border: 1px solid rgb(252 165 165);
 }
 
-.form-group input {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
-  font-size: 16px;
+.confidence-high {
+  color: rgb(22 163 74);
+  background-color: rgb(240 253 244);
+  border-color: rgb(187 247 208);
 }
 
-.vs-divider {
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 20px 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+.confidence-medium {
+  color: rgb(202 138 4);
+  background-color: rgb(254 252 232);
+  border-color: rgb(254 240 138);
 }
 
-.predict-btn {
-  background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-  border: none;
-  color: white;
-  padding: 15px 30px;
-  border-radius: 25px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 20px;
+.confidence-low {
+  color: rgb(220 38 38);
+  background-color: rgb(254 242 242);
+  border-color: rgb(252 165 165);
 }
 
-.predict-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.predict-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.prediction-result {
-  margin-top: 30px;
-}
-
-.result-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 25px;
-  text-align: left;
-}
-
-.result-card p {
-  margin: 10px 0;
-  font-size: 18px;
-}
-
-.analytics-placeholder {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 50px;
-  margin-top: 30px;
-}
-
-.analytics-placeholder p {
-  font-size: 18px;
-  margin: 15px 0;
-}
-
+/* Responsive design */
 @media (max-width: 768px) {
-  .options-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .home-container h1 {
-    font-size: 2rem;
-  }
-
-  .prediction-form {
-    padding: 20px;
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
