@@ -1,5 +1,5 @@
 import pandas as pd
-from goodish_model import predicter
+from .goodish_model import predicter
 
 def recommend_bet(games_df, betting_line):
     """
