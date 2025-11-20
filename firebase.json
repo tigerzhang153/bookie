@@ -17,10 +17,8 @@
       }
     ]
   },
-  "functions": [
-    {
-      "source": "functions",
-      "runtime": "python311"
-    }
-  ]
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs18"
+  }
 }
