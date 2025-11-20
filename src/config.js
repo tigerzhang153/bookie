@@ -1,6 +1,6 @@
 const config = {
   apiUrl: process.env.NODE_ENV === 'production'
-    ? 'https://us-central1-bookie-ai-dc1f8.cloudfunctions.net/api'  // Firebase Functions URL
+    ? 'YOUR_CLOUD_RUN_URL_HERE'  // Will be updated after Cloud Run deployment
     : 'http://localhost:8000'
 }
 
