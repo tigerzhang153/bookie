@@ -81,6 +81,16 @@ async def predict_game(game_input: GameInput):
         logger.error(f"Error making prediction: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/")
+async def root():
+    return {
+        "message": "Bookie API",
+        "endpoints": {
+            "health": "/health",
+            "predict": "/predict (POST)"
+        }
+    }
+
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
