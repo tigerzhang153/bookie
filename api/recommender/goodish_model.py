@@ -15,8 +15,11 @@ def _load_model():
     global _model
     if _model is None:
         if not os.path.exists(model_path):
-            raise FileNotFoundError(f"Model file not found: {model_path}. Please run train_model.py first.")
-        _model = joblib.load(model_path)
+            raise FileNotFoundError(f"Model file not found: {model_path}. Current dir: {os.getcwd()}, Script dir: {script_dir}")
+        try:
+            _model = joblib.load(model_path)
+        except Exception as e:
+            raise RuntimeError(f"Failed to load model from {model_path}: {str(e)}")
     return _model
 
 def predicter(game_df):
