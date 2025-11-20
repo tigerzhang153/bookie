@@ -73,13 +73,25 @@ async def predict_game(game_input: GameInput):
         }])
 
         # Get prediction using the recommend_bet function
-        prediction = recommend_bet(game_data, game_input.betting_line)
-        logger.info(f"Prediction successful: {prediction}")
-        
-        return JSONResponse(content=prediction)
+        try:
+            prediction = recommend_bet(game_data, game_input.betting_line)
+            logger.info(f"Prediction successful: {prediction}")
+            return JSONResponse(content=prediction)
+        except FileNotFoundError as e:
+            logger.error(f"Model file not found: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Model file not found: {str(e)}")
+        except Exception as e:
+            logger.error(f"Error in prediction: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())
+            raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error making prediction: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
 
 @app.get("/")
 async def root():
