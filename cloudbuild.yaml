@@ -5,15 +5,25 @@ steps:
     args:
       - '-c'
       - |
+        set -e  # Exit on error
         apt-get update && apt-get install -y git-lfs
         git lfs install
+        echo "Pulling Git LFS files..."
         git lfs pull
         echo "Git LFS files pulled"
-        ls -lh api/recommender/ml_model.joblib || echo "Model file not found"
-        # Verify file size
+        # Verify model file was pulled correctly
         if [ -f api/recommender/ml_model.joblib ]; then
           SIZE=$(stat -f%z api/recommender/ml_model.joblib 2>/dev/null || stat -c%s api/recommender/ml_model.joblib 2>/dev/null || echo "0")
           echo "Model file size: $SIZE bytes"
+          if [ "$SIZE" -lt 100000000 ]; then
+            echo "ERROR: Model file is too small ($SIZE bytes) - likely Git LFS pointer!"
+            echo "Expected ~149MB. Build will fail."
+            exit 1
+          fi
+          echo "✓ Model file is valid (size: $SIZE bytes)"
+        else
+          echo "ERROR: Model file not found!"
+          exit 1
         fi
   # Build the container image from api directory (files are in workspace)
   - name: 'gcr.io/cloud-builders/docker'
