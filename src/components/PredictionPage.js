@@ -23,9 +23,11 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    // Clear previous results and errors
+    // Clear previous results and errors immediately
     setError("")
     setPrediction(null)
+    
+    // Set loading state
     setIsLoading(true)
 
     try {
@@ -99,7 +101,8 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
       setError(err instanceof Error ? err.message : "Failed to get prediction. Please try again.")
       setPrediction(null) // Clear prediction on error
     } finally {
-      setIsLoading(false) // Always re-enable the button
+      // Always re-enable the button so user can try again
+      setIsLoading(false)
     }
   }
 
