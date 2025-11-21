@@ -1,4 +1,15 @@
 steps:
+  # Install Git LFS and pull LFS files before building
+  - name: 'ubuntu'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        apt-get update && apt-get install -y git-lfs
+        git lfs install
+        git lfs pull
+        echo "Git LFS files pulled"
+        ls -lh api/recommender/ml_model.joblib || echo "Model file not found"
   # Build the container image from api directory
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/bookie-api', '-f', 'api/Dockerfile', 'api']
