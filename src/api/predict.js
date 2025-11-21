@@ -1,22 +1,42 @@
+import config from '../config'
+import { teamNameToId } from './teamMapping'
+
 export const predictGame = async (team1, team2, bettingLine) => {
   try {
-    // For now, return mock data that matches your model structure
-    // Replace this with actual call to your Firebase Cloud Function
+    // Convert team names to IDs
+    const homeTeamId = teamNameToId[team1.trim()]
+    const awayTeamId = teamNameToId[team2.trim()]
 
-    const mockResponse = {
-      predicted_total: 218.5,
-      betting_line: bettingLine,
-      edge: Math.abs(218.5 - bettingLine),
-      recommendation: 218.5 > bettingLine ? "bet the OVER" : "bet the UNDER",
-      confidence: 75,
-      model_features: {
-        avgpointtotal_home: 110.2,
-        avgpointtotal_away: 108.3,
-        meanpointtotal: 109.25,
-      },
+    if (!homeTeamId || !awayTeamId) {
+      throw new Error("Invalid team name(s). Please enter valid NBA team names.")
     }
 
-    return mockResponse
+    const bettingLineNum = Number.parseFloat(bettingLine)
+    if (isNaN(bettingLineNum)) {
+      throw new Error("Please enter a valid betting line number.")
+    }
+
+    // Call the actual prediction API
+    const response = await fetch(`${config.apiUrl}/predict`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        home_team_id: homeTeamId,
+        away_team_id: awayTeamId,
+        betting_line: bettingLineNum
+      })
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null)
+      throw new Error(errorData?.detail || 'Failed to get prediction from model')
+    }
+
+    const result = await response.json()
+    return result
   } catch (error) {
     console.error("Prediction API error:", error)
     throw error
