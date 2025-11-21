@@ -22,11 +22,13 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://bookie-ai-dc1f8.web.app"  # Your Firebase hosting URL
+        "https://bookie-ai-dc1f8.web.app",  # Your Firebase hosting URL
+        "https://bookie-ai-dc1f8.firebaseapp.com"  # Alternative Firebase URL
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 class GameInput(BaseModel):

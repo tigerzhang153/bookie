@@ -47,6 +47,7 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
       })
 
       // Call prediction API
+      console.log("API URL:", config.apiUrl)
       const response = await fetch(`${config.apiUrl}/predict`, {
         method: 'POST',
         headers: {
@@ -57,12 +58,21 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
           home_team_id: homeTeamId,
           away_team_id: awayTeamId,
           betting_line: bettingLineNum
-        })
+        }),
+        signal: AbortSignal.timeout(60000) // 60 second timeout
+      }).catch((fetchError) => {
+        console.error("Fetch error:", fetchError)
+        if (fetchError.name === 'AbortError') {
+          throw new Error('Request timed out. Please try again.')
+        } else if (fetchError.name === 'TypeError' && fetchError.message.includes('Failed to fetch')) {
+          throw new Error(`Network error: Unable to reach API at ${config.apiUrl}. Check if the API is running and CORS is configured correctly.`)
+        }
+        throw fetchError
       })
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null)
-        throw new Error(errorData?.detail || 'Failed to get prediction from model')
+        throw new Error(errorData?.detail || `API error: ${response.status} ${response.statusText}`)
       }
 
       const result = await response.json()
