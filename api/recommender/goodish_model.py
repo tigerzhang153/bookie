@@ -15,11 +15,27 @@ def _load_model():
     global _model
     if _model is None:
         if not os.path.exists(model_path):
-            raise FileNotFoundError(f"Model file not found: {model_path}. Please run train_model.py first.")
+            raise FileNotFoundError(f"Model file not found: {model_path}. Current dir: {os.getcwd()}, Script dir: {script_dir}")
+        
+        # Check file size to detect Git LFS pointer
+        file_size = os.path.getsize(model_path)
+        if file_size < 1000000:  # Git LFS pointers are small
+            raise FileNotFoundError(
+                f"Model file appears to be a Git LFS pointer (size: {file_size} bytes). "
+                f"Expected ~149MB. Please ensure Git LFS files are pulled during Docker build."
+            )
+        
         try:
             _model = joblib.load(model_path)
         except Exception as e:
-            raise RuntimeError(f"Failed to load model from {model_path}: {str(e)}")
+            error_msg = str(e)
+            if "118" in error_msg:
+                raise RuntimeError(
+                    f"Failed to load model (error 118): File may be corrupted or a Git LFS pointer. "
+                    f"File size: {file_size} bytes. Expected ~149MB. "
+                    f"Please ensure the actual model file is included in the Docker image."
+                )
+            raise RuntimeError(f"Failed to load model from {model_path}: {error_msg}")
     return _model
 
 def predicter(game_df):
