@@ -233,7 +233,11 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
                     {/* Main Prediction */}
                     <div className="text-center p-4 bg-white rounded-lg border">
                       <p className="text-sm text-slate-600 mb-1">Predicted Total Points</p>
-                      <p className="text-3xl font-bold text-green-700">{prediction.predicted_total}</p>
+                      <p className="text-3xl font-bold text-green-700">
+                        {typeof prediction.predicted_total === 'number' 
+                          ? prediction.predicted_total.toFixed(2) 
+                          : prediction.predicted_total}
+                      </p>
                     </div>
 
                     {/* Betting Recommendation */}
@@ -257,7 +261,11 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
                       )}
                       <div className="p-3 rounded-lg border bg-orange-50 border-orange-200">
                         <p className="text-xs font-medium text-orange-600 mb-1">Edge</p>
-                        <p className="text-xl font-bold text-orange-700">{prediction.edge} pts</p>
+                        <p className="text-xl font-bold text-orange-700">
+                          {typeof prediction.edge === 'number' 
+                            ? prediction.edge.toFixed(2) 
+                            : prediction.edge} pts
+                        </p>
                       </div>
                     </div>
 
@@ -286,7 +294,11 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
                     <div className="space-y-3">
                       <div className="flex justify-between items-center p-3 bg-white rounded border">
                         <span className="text-sm font-medium">Betting Line</span>
-                        <span className="font-bold">{prediction.betting_line}</span>
+                        <span className="font-bold">
+                          {typeof prediction.betting_line === 'number' 
+                            ? prediction.betting_line.toFixed(2) 
+                            : prediction.betting_line}
+                        </span>
                       </div>
 
                       {prediction.factors && prediction.factors.length > 0 && (
