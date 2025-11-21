@@ -65,7 +65,12 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
       } catch (fetchError) {
         console.error("Fetch error:", fetchError)
         if (fetchError.name === 'TypeError' && fetchError.message.includes('Failed to fetch')) {
-          throw new Error(`Network error: Unable to reach API at ${config.apiUrl}. This could be a CORS issue or the API is not accessible. Check browser console for details.`)
+          const errorMsg = `Network error: Unable to reach API. Please check:
+1. API URL: ${config.apiUrl}
+2. Browser console for CORS errors
+3. Cloud Run service is running`
+          console.error("Full error:", errorMsg)
+          throw new Error(errorMsg)
         }
         throw fetchError
       }
