@@ -22,9 +22,11 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsLoading(true)
+    
+    // Clear previous results and errors
     setError("")
     setPrediction(null)
+    setIsLoading(true)
 
     try {
       // Convert team names to IDs
@@ -95,8 +97,9 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
     } catch (err) {
       console.error("Prediction error:", err)
       setError(err instanceof Error ? err.message : "Failed to get prediction. Please try again.")
+      setPrediction(null) // Clear prediction on error
     } finally {
-      setIsLoading(false)
+      setIsLoading(false) // Always re-enable the button
     }
   }
 
