@@ -19,6 +19,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy all files from api directory
 COPY . .
 
+# Verify model file is present and valid (not a Git LFS pointer)
+RUN python3 -c "import os; path='recommender/ml_model.joblib'; size=os.path.getsize(path) if os.path.exists(path) else 0; print(f'Model file size: {size} bytes'); assert size > 1000000, f'Model file too small ({size} bytes) - likely Git LFS pointer!'" || echo "WARNING: Model file check failed"
+
 # Cloud Run uses PORT environment variable
 ENV PORT=8080
 EXPOSE 8080
