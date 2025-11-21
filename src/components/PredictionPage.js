@@ -233,7 +233,7 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
                     {/* Main Prediction */}
                     <div className="text-center p-4 bg-white rounded-lg border">
                       <p className="text-sm text-slate-600 mb-1">Predicted Total Points</p>
-                      <p className="text-3xl font-bold text-green-700">{prediction.predicted_total}</p>
+                      <p className="text-3xl font-bold text-green-700">{typeof prediction.predicted_total === 'number' ? prediction.predicted_total.toFixed(1) : prediction.predicted_total}</p>
                     </div>
 
                     {/* Betting Recommendation */}
@@ -249,13 +249,19 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
 
                     {/* Key Metrics */}
                     <div className="grid grid-cols-2 gap-4">
-                      <div className={`p-3 rounded-lg border ${getConfidenceColor(prediction.confidence)}`}>
+                      <div className={`p-3 rounded-lg border ${getConfidenceColor(prediction.confidence || 0)}`}>
                         <p className="text-xs font-medium mb-1">Confidence</p>
-                        <p className="text-xl font-bold">{prediction.confidence}%</p>
+                        <p className="text-xl font-bold">
+                          {prediction.confidence != null 
+                            ? (typeof prediction.confidence === 'number' ? prediction.confidence.toFixed(1) : prediction.confidence)
+                            : 'N/A'}%
+                        </p>
                       </div>
                       <div className="p-3 rounded-lg border bg-orange-50 border-orange-200">
                         <p className="text-xs font-medium text-orange-600 mb-1">Edge</p>
-                        <p className="text-xl font-bold text-orange-700">{prediction.edge} pts</p>
+                        <p className="text-xl font-bold text-orange-700">
+                          {typeof prediction.edge === 'number' ? prediction.edge.toFixed(1) : prediction.edge} pts
+                        </p>
                       </div>
                     </div>
 
@@ -266,15 +272,27 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
                         <div className="grid grid-cols-1 gap-2 text-sm">
                           <div className="flex justify-between">
                             <span className="text-slate-600">Home Team Avg:</span>
-                            <span className="font-medium">{prediction.model_features.avgpointtotal_home}</span>
+                            <span className="font-medium">
+                              {typeof prediction.model_features.avgpointtotal_home === 'number' 
+                                ? prediction.model_features.avgpointtotal_home.toFixed(1) 
+                                : prediction.model_features.avgpointtotal_home}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-slate-600">Away Team Avg:</span>
-                            <span className="font-medium">{prediction.model_features.avgpointtotal_away}</span>
+                            <span className="font-medium">
+                              {typeof prediction.model_features.avgpointtotal_away === 'number' 
+                                ? prediction.model_features.avgpointtotal_away.toFixed(1) 
+                                : prediction.model_features.avgpointtotal_away}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-slate-600">Combined Avg:</span>
-                            <span className="font-medium">{prediction.model_features.meanpointtotal}</span>
+                            <span className="font-medium">
+                              {typeof prediction.model_features.meanpointtotal === 'number' 
+                                ? prediction.model_features.meanpointtotal.toFixed(1) 
+                                : prediction.model_features.meanpointtotal}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -284,7 +302,7 @@ export default function PredictionPage({ onNavigateBack, prediction, setPredicti
                     <div className="space-y-3">
                       <div className="flex justify-between items-center p-3 bg-white rounded border">
                         <span className="text-sm font-medium">Betting Line</span>
-                        <span className="font-bold">{prediction.betting_line}</span>
+                        <span className="font-bold">{typeof prediction.betting_line === 'number' ? prediction.betting_line.toFixed(1) : prediction.betting_line}</span>
                       </div>
 
                       {prediction.factors && prediction.factors.length > 0 && (
